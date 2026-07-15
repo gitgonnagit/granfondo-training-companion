@@ -38,7 +38,9 @@ export function computeBpmRange(zoneId, lthr) {
 export function indoorTargetLine(indoor, lthr) {
   if (!indoor) return { head: '', tail: '', hasZone: false, hasLthr: false }
   if (indoor.isFieldTest) {
-    return { head: 'Field test — see protocol below', tail: '', hasZone: false, hasLthr: false }
+    // Field-test days render their own amber protocol box in WorkoutCard;
+    // no caller reads `target.head` for field-test days so we return blanks.
+    return { head: '', tail: '', hasZone: false, hasLthr: false }
   }
   const z = indoor.zone ? getHrZone(indoor.zone) : null
   const tailBits = []
