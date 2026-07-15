@@ -1,0 +1,734 @@
+{
+    "athlete": {
+      "heightCm": 190.5,
+      "weightKg": 84,
+      "ftpWatts": 275,
+      "raceDate": "2026-09-12",
+      "raceGoal": "Sub-4:30, 122km, RBC GranFondo Whistler",
+      "vo2max": 53
+    },
+    "powerZones": [
+      {
+        "id": "z1_recovery",
+        "label": "Z1 Recovery",
+        "minWatts": 0,
+        "maxWatts": 137,
+        "use": "Cool-downs, easy spins"
+      },
+      {
+        "id": "z2_endurance",
+        "label": "Z2 Endurance",
+        "minWatts": 138,
+        "maxWatts": 201,
+        "use": "Long rides"
+      },
+      {
+        "id": "z3_tempo",
+        "label": "Z3 Tempo",
+        "minWatts": 202,
+        "maxWatts": 234,
+        "use": "Hill repeats (base)"
+      },
+      {
+        "id": "sweet_spot",
+        "label": "Sweet Spot",
+        "minWatts": 242,
+        "maxWatts": 259,
+        "use": "Hills (build)"
+      },
+      {
+        "id": "threshold",
+        "label": "Threshold",
+        "minWatts": 260,
+        "maxWatts": 275,
+        "use": "Hills (peak)"
+      },
+      {
+        "id": "z5_vo2max",
+        "label": "Z5 VO2max",
+        "minWatts": 276,
+        "maxWatts": 316,
+        "use": "Late openers"
+      }
+    ],
+    "hrZones": [
+      {
+        "id": "z2_endurance",
+        "label": "Zone 2 / Endurance",
+        "pctLTHRmin": 85,
+        "pctLTHRmax": 89,
+        "rpe": "3–4",
+        "cadence": "85–95 rpm"
+      },
+      {
+        "id": "z3_tempo",
+        "label": "Zone 3 / Tempo",
+        "pctLTHRmin": 90,
+        "pctLTHRmax": 94,
+        "rpe": "5–6",
+        "cadence": "85–95 rpm"
+      },
+      {
+        "id": "z4_sweetspot",
+        "label": "Zone 4 / Sweet Spot",
+        "pctLTHRmin": 95,
+        "pctLTHRmax": 99,
+        "rpe": "6–7",
+        "cadence": "90–95 rpm"
+      },
+      {
+        "id": "z5a_threshold",
+        "label": "Zone 5a / Threshold",
+        "pctLTHRmin": 100,
+        "pctLTHRmax": 102,
+        "rpe": "7–8",
+        "cadence": "90–95 rpm"
+      },
+      {
+        "id": "z5b_vo2max",
+        "label": "Zone 5b / VO2max",
+        "pctLTHRmin": 103,
+        "pctLTHRmax": 106,
+        "rpe": "9",
+        "cadence": "95–100 rpm"
+      }
+    ],
+    "fieldTestProtocol": [
+      "15 min progressive warm-up, cadence 85–95rpm",
+      "5 min hard effort, then 5 min easy (not scored, just clears the legs)",
+      "20-minute time trial: hardest STEADY effort you can sustain the entire 20 min — even pacing, not a sprint",
+      "Average HR of those 20 minutes = your estimated LTHR",
+      "10 min cool-down. Record the number — every future indoor session is calculated from it."
+    ],
+    "redFlags": [
+      {
+        "id": "tendon_pain",
+        "label": "Tendon pain elevated",
+        "rule": "Next-day tendon pain > 5/10, OR next-day pain has risen on each of the last 3 logged days",
+        "action": "Switch to isometric-only loading for 3–5 days (e.g. Spanish squat holds, 5x45s) before resuming normal strength progression.",
+        "fields": [
+          "tendonPainNextAM"
+        ]
+      },
+      {
+        "id": "ankle_flag",
+        "label": "Ankle red flag",
+        "rule": "Swelling logged, OR giving-way logged, OR pain with normal weight-bearing logged",
+        "action": "Stop loading that joint. Get reassessed by your treating physio/physician before resuming ankle progression.",
+        "fields": [
+          "ankleSwelling",
+          "ankleGivingWay"
+        ]
+      },
+      {
+        "id": "recovery_flag",
+        "label": "Recovery markers flagged",
+        "rule": "Today's HRV is down more than 20–25% vs. the trailing 7-day average AND today's RHR is up 5–7+ bpm vs. the trailing 7-day average, on 2 or more consecutive logged days",
+        "action": "Swap today's hard/key session for an easy day or full rest.",
+        "fields": [
+          "hrv",
+          "rhr"
+        ]
+      },
+      {
+        "id": "performance_flag",
+        "label": "Session harder than expected",
+        "rule": "'Felt harder than it should have' self-report checked on 2+ training days within the last 7 logged days",
+        "action": "Possible overreaching — add an extra rest day, or consider pulling the next scheduled deload forward.",
+        "fields": [
+          "sessionFeltHarder"
+        ]
+      },
+      {
+        "id": "weight_flag",
+        "label": "Unintended weight loss",
+        "rule": "Logged body weight down more than 1% in a rolling 7-day window, sustained across 2 consecutive 7-day windows",
+        "action": "Increase daily carbohydrate intake — you're likely under-fueling relative to training load.",
+        "fields": [
+          "bodyWeightKg"
+        ]
+      }
+    ],
+    "nutrition": [
+      "Daily: 5–7 g/kg carbs (420–590g) on normal days, 8–10 g/kg (670–840g) on long-ride/peak/race-load days. Protein 1.8–2.0 g/kg (150–170g).",
+      "Pre-ride: 1–3 g/kg carbs, 1–4h out (bagel + banana works well).",
+      "During rides > 90 min: 60–90 g carbs/hr + sodium bottle (700–1500 mg/L — heavy/salty sweater profile).",
+      "Post-ride: 1–1.2 g/kg carbs + 0.3–0.4 g/kg protein within 30–45 min (milk + banana + oatmeal works well).",
+      "Creatine 5g/day, post-workout. Caffeine ~3mg/kg pre-key-sessions and race day only (not daily).",
+      "Cramp rescue in-race: pickle juice or mustard packet at the first twinge."
+    ],
+    "weeks": [
+      {
+        "id": "week1",
+        "title": "Week 1",
+        "dates": "Jul 13–19, 2026",
+        "phase": "Foundation / Tendon Load Correction",
+        "hours": "6.5 h total (4.0 bike / 2.5 strength-rehab)",
+        "lthrPeriod": "lthr1",
+        "days": [
+          {
+            "day": "Mon",
+            "date": "2026-07-13",
+            "type": "recovery",
+            "title": "Easy Recovery / Mobility (20–30 min)",
+            "details": "Optional 20 min Z1 spin, or full rest. 10–15 min mobility: hip flexor/quad/calf + ankle balance work."
+          },
+          {
+            "day": "Tue",
+            "date": "2026-07-14",
+            "type": "rest",
+            "title": "Full Rest",
+            "details": "No structured training. Optional: 10 min ankle proprioception/balance at home (no gym needed). Bank recovery — tomorrow is a two-part gym day."
+          },
+          {
+            "day": "Wed",
+            "date": "2026-07-15",
+            "type": "gym_combined",
+            "title": "GYM — Indoor Bike + Upper/Core (~90 min)",
+            "details": "PART 1 — LTHR Field Test (45 min): 15 min progressive warm-up (cadence 85–95rpm). 5 min hard effort, then 5 min easy (not scored). 20-MIN TIME TRIAL: hardest steady effort sustainable for the full 20 min — even pacing, not a sprint. Average HR of those 20 min = your estimated LTHR — enter it in Settings, it sets every indoor zone through Week 4. 10 min cool-down. PART 2 — Upper Body/Core (45 min): Band ER/IR 3x15. Face pulls 3x12. OH press (light) 3x8. Landmine press 3x8. Dead bug + side plank 3x each. Ankle proprioception 10 min after.",
+            "indoor": {
+              "isFieldTest": true,
+              "zone": null,
+              "intervals": null,
+              "recovery": null
+            }
+          },
+          {
+            "day": "Thu",
+            "date": "2026-07-16",
+            "type": "outdoor_hills",
+            "title": "OUTDOOR — SFU Hill Climb (55–60 min)",
+            "details": "15 min WU. SFU Hill Climb x1 @ 210–225W, seated, cadence >70rpm. 15–20 min easy spin back."
+          },
+          {
+            "day": "Fri",
+            "date": "2026-07-17",
+            "type": "rest",
+            "title": "Rest / Mobility",
+            "details": "10–15 min mobility (hip flexor/quad/calf) + balance work. Full rest preferred; optional 20 min Z1 spin only if legs feel fresh."
+          },
+          {
+            "day": "Sat",
+            "date": "2026-07-18",
+            "type": "outdoor_long",
+            "title": "OUTDOOR — Long Ride 1:30 (~30km)",
+            "details": "Full Z2, 150–190W, conversational pace. Test your DIY electrolyte bottle recipe for the first time."
+          },
+          {
+            "day": "Sun",
+            "date": "2026-07-19",
+            "type": "golf_gym_lower",
+            "title": "Golf + GYM — Lower-Body Strength (55 min)",
+            "details": "Golf 9:15–10:15am. Then: WU 5 min + mobility. Leg press or Spanish squat, 3s down/2s up, depth capped at 60–70° flexion, 4x8 @ RPE 6. Split squat 3x8/side. RDL 3x8. Calf raise 4x12. Band ankle inv/ev 3x15/side. Single-leg balance 3x30s/side. Pallof press 3x10/side. This follows yesterday's long ride — if legs are trashed, cut load ~20% rather than skipping."
+          }
+        ]
+      },
+      {
+        "id": "week2",
+        "title": "Week 2",
+        "dates": "Jul 20–26, 2026",
+        "phase": "Build 1",
+        "hours": "7.25 h total (4.5 bike / 2.75 strength-rehab)",
+        "lthrPeriod": "lthr1",
+        "days": [
+          {
+            "day": "Mon",
+            "date": "2026-07-20",
+            "type": "recovery",
+            "title": "Easy Recovery / Mobility (20–25 min)",
+            "details": "Optional 20–25 min Z1 spin, or full rest. Mobility + ankle balance work."
+          },
+          {
+            "day": "Tue",
+            "date": "2026-07-21",
+            "type": "rest",
+            "title": "Full Rest",
+            "details": "No structured training. Optional 10 min ankle proprioception at home."
+          },
+          {
+            "day": "Wed",
+            "date": "2026-07-22",
+            "type": "gym_combined",
+            "title": "GYM — Indoor Bike + Upper/Core (~105 min)",
+            "details": "PART 1 — Sweet Spot (60 min): 15 min WU Z1–2. 3x8 min @ Zone 4/Sweet Spot (95–99% LTHR), RPE 6–7, cadence 90–95rpm, 4 min Z2 recovery between. 10 min CD. PART 2 — Upper Body/Core (45 min): same as Week 1, +1 set on each exercise. Ankle proprioception 10 min.",
+            "indoor": {
+              "isFieldTest": false,
+              "zone": "z4_sweetspot",
+              "intervals": "3 x 8 min",
+              "recovery": "4 min easy between"
+            }
+          },
+          {
+            "day": "Thu",
+            "date": "2026-07-23",
+            "type": "outdoor_hills",
+            "title": "OUTDOOR — SFU Hill Climb (70–75 min)",
+            "details": "15 min WU. SFU x2 @ 225–245W, full recovery descent between reps. 15 min CD."
+          },
+          {
+            "day": "Fri",
+            "date": "2026-07-24",
+            "type": "rest",
+            "title": "Rest / Mobility",
+            "details": "Mobility work. Optional 20–25 min Z1 spin."
+          },
+          {
+            "day": "Sat",
+            "date": "2026-07-25",
+            "type": "outdoor_long",
+            "title": "OUTDOOR — Long Ride 2:00 (~45km)",
+            "details": "Z2, 165–195W. Fueling rehearsal: 40–60g carb/hr. Note any cramp warning signs."
+          },
+          {
+            "day": "Sun",
+            "date": "2026-07-26",
+            "type": "golf_gym_lower",
+            "title": "Golf + GYM — Lower-Body Strength (60 min)",
+            "details": "Golf 9:15–10:15am. Then: if next-day pain returned to baseline all week, progress depth toward 80–90° and load +5–10%. Leg press/Spanish squat 4x8. Split squat 3x10/side. RDL 3x10. Single-leg calf raise 4x12. Band ankle work 3x15/side. Single-leg balance, eyes closed, 3x30s. Pallof press 3x12/side."
+          }
+        ]
+      },
+      {
+        "id": "week3",
+        "title": "Week 3",
+        "dates": "Jul 27 – Aug 2, 2026",
+        "phase": "Build 1 (Peak)",
+        "hours": "8.25 h total (5.25 bike / 3.0 strength-rehab)",
+        "lthrPeriod": "lthr1",
+        "days": [
+          {
+            "day": "Mon",
+            "date": "2026-07-27",
+            "type": "recovery",
+            "title": "Easy Recovery / Mobility (20–25 min)",
+            "details": "Optional spin or full rest. Mobility work."
+          },
+          {
+            "day": "Tue",
+            "date": "2026-07-28",
+            "type": "rest",
+            "title": "Full Rest",
+            "details": "No structured training. Optional 10 min ankle proprioception at home."
+          },
+          {
+            "day": "Wed",
+            "date": "2026-07-29",
+            "type": "gym_combined",
+            "title": "GYM — Indoor Bike + Upper/Core (~120 min)",
+            "details": "PART 1 — Sweet Spot (70 min): 15 min WU. 3x10 min @ Zone 4/Sweet Spot (95–99% LTHR), RPE 6–7, 5 min recovery between. 10 min CD. PART 2 — Upper Body/Core (50 min): add load to landmine press. Ankle proprioception 10 min.",
+            "indoor": {
+              "isFieldTest": false,
+              "zone": "z4_sweetspot",
+              "intervals": "3 x 10 min",
+              "recovery": "5 min easy between"
+            }
+          },
+          {
+            "day": "Thu",
+            "date": "2026-07-30",
+            "type": "outdoor_hills",
+            "title": "OUTDOOR — SFU Hill Climb (85–90 min)",
+            "details": "15 min WU. SFU x2–3 @ 235–255W. 15–20 min CD."
+          },
+          {
+            "day": "Fri",
+            "date": "2026-07-31",
+            "type": "rest",
+            "title": "Rest / Mobility",
+            "details": "Mobility only — no bike or strength."
+          },
+          {
+            "day": "Sat",
+            "date": "2026-08-01",
+            "type": "outdoor_long",
+            "title": "OUTDOOR — Long Ride 2:30 (~58km)",
+            "details": "Z2, 170–200W + 2x8 min tempo surge @ 210–225W mid-ride. Full fueling rehearsal: 60g carb/hr + sodium bottle."
+          },
+          {
+            "day": "Sun",
+            "date": "2026-08-02",
+            "type": "golf_gym_lower",
+            "title": "Golf + GYM — Lower-Body Strength (65 min)",
+            "details": "Golf 9:15–10:15am. Then: progress load if pain criteria still being met. Leg press 4x8 heavier. Split squat 3x10. RDL 3x10. Single-leg calf raise 4x15. Add low-amplitude pogo hops 2x10 ONLY if pain has been ≤3/10 during and resolved by next morning for 10+ straight days — otherwise skip and stay isotonic. Yesterday was a bigger ride (2:30 + surges) — autoregulate load down if legs are cooked."
+          }
+        ]
+      },
+      {
+        "id": "week4",
+        "title": "Week 4",
+        "dates": "Aug 3–9, 2026",
+        "phase": "DELOAD",
+        "hours": "6.0 h total (3.5 bike / 2.5 strength-rehab)",
+        "lthrPeriod": "lthr1",
+        "days": [
+          {
+            "day": "Mon",
+            "date": "2026-08-03",
+            "type": "rest",
+            "title": "Full Rest / Light Mobility",
+            "details": "No structured training. Gentle mobility only."
+          },
+          {
+            "day": "Tue",
+            "date": "2026-08-04",
+            "type": "rest",
+            "title": "Full Rest",
+            "details": "No structured training."
+          },
+          {
+            "day": "Wed",
+            "date": "2026-08-05",
+            "type": "gym_combined",
+            "title": "GYM — Indoor Bike + Upper/Core (~80 min, reduced)",
+            "details": "PART 1 (45 min): 15 min WU. 2x8 min @ Zone 3/Tempo (90–94% LTHR), RPE 5–6. 10 min CD. Keep it genuinely easy. PART 2 — Upper Body/Core (35 min): reduce volume ~30% vs. Week 3.",
+            "indoor": {
+              "isFieldTest": false,
+              "zone": "z3_tempo",
+              "intervals": "2 x 8 min",
+              "recovery": "easy spin between"
+            }
+          },
+          {
+            "day": "Thu",
+            "date": "2026-08-06",
+            "type": "outdoor_hills",
+            "title": "OUTDOOR — SFU Hill Climb (45 min)",
+            "details": "SFU x1 @ 200–215W, steady — no pushing."
+          },
+          {
+            "day": "Fri",
+            "date": "2026-08-07",
+            "type": "rest",
+            "title": "Full Rest",
+            "details": "No training. Prioritize sleep."
+          },
+          {
+            "day": "Sat",
+            "date": "2026-08-08",
+            "type": "outdoor_long",
+            "title": "OUTDOOR — Long Ride 1:45 easy (~35km)",
+            "details": "Z2, 150–180W only — no intervals, recovery-focused."
+          },
+          {
+            "day": "Sun",
+            "date": "2026-08-09",
+            "type": "golf_gym_lower",
+            "title": "Golf + GYM — Lower-Body Strength (40 min) + CHECK-IN",
+            "details": "Golf 9:15–10:15am. Then: reduce load ~30–40%. Isometric emphasis: Spanish squat holds 5x45s. Light balance work only. CHECK-IN: review this week's pain trend, HRV trend, and ankle status before advancing to Week 5 — do not progress if any are still flagged."
+          }
+        ]
+      },
+      {
+        "id": "week5",
+        "title": "Week 5",
+        "dates": "Aug 10–16, 2026",
+        "phase": "Build 2",
+        "hours": "8.75 h total (5.75 bike / 3.0 strength-rehab)",
+        "lthrPeriod": "lthr2",
+        "days": [
+          {
+            "day": "Mon",
+            "date": "2026-08-10",
+            "type": "recovery",
+            "title": "Easy Recovery / Mobility (20–30 min)",
+            "details": "Optional Z1 spin or rest. Mobility + ankle work."
+          },
+          {
+            "day": "Tue",
+            "date": "2026-08-11",
+            "type": "rest",
+            "title": "Full Rest",
+            "details": "No structured training. Bank recovery — tomorrow includes your LTHR retest."
+          },
+          {
+            "day": "Wed",
+            "date": "2026-08-12",
+            "type": "gym_combined",
+            "title": "GYM — LTHR Retest + Upper/Core (~135 min)",
+            "details": "PART 1 — LTHR Retest (45 min): same protocol as Week 1 (15 min WU, 20-min TT, avg HR = new LTHR). Enter the new number in Settings — it drives Weeks 5–8. PART 2 — Upper Body/Core (50 min): add light medicine ball chest pass 2x8 if shoulder is pain-free.",
+            "indoor": {
+              "isFieldTest": true,
+              "zone": null,
+              "intervals": null,
+              "recovery": null
+            }
+          },
+          {
+            "day": "Thu",
+            "date": "2026-08-13",
+            "type": "outdoor_hills",
+            "title": "OUTDOOR — SFU Hill Climb (95 min)",
+            "details": "15 min WU. SFU x3 @ 240–260W. 20 min CD."
+          },
+          {
+            "day": "Fri",
+            "date": "2026-08-14",
+            "type": "rest",
+            "title": "Rest / Mobility",
+            "details": "Mobility. Optional 25 min Z1 spin."
+          },
+          {
+            "day": "Sat",
+            "date": "2026-08-15",
+            "type": "outdoor_long",
+            "title": "OUTDOOR — Long Ride 3:00 (~70km)",
+            "details": "Z2, 175–205W + 3x10 min race-pace surges @ 215–230W. Full fueling/electrolyte rehearsal."
+          },
+          {
+            "day": "Sun",
+            "date": "2026-08-16",
+            "type": "golf_gym_lower",
+            "title": "Golf + GYM — Lower-Body Strength (65 min)",
+            "details": "Golf 9:15–10:15am. Then: resume progressive loading. Leg press/Spanish squat 4x8–10 heavier. Split squat 3x10. RDL 3x10. Single-leg calf raise 4x15. Hop-to-stick 2x8 if ankle/tendon criteria met. Yesterday's long ride (3:00) was your biggest yet — reduce today's load if legs are flat."
+          }
+        ]
+      },
+      {
+        "id": "week6",
+        "title": "Week 6",
+        "dates": "Aug 17–23, 2026",
+        "phase": "PEAK WEEK",
+        "hours": "9.5 h total (6.5 bike / 3.0 strength-rehab)",
+        "lthrPeriod": "lthr2",
+        "days": [
+          {
+            "day": "Mon",
+            "date": "2026-08-17",
+            "type": "recovery",
+            "title": "Easy Recovery / Mobility (25–30 min)",
+            "details": "Optional easy spin or rest. Mobility + ankle work. Absorb yesterday's long ride + strength double-header."
+          },
+          {
+            "day": "Tue",
+            "date": "2026-08-18",
+            "type": "rest",
+            "title": "Full Rest",
+            "details": "No structured training. Bank recovery — tomorrow's combined gym day precedes your toughest hill session."
+          },
+          {
+            "day": "Wed",
+            "date": "2026-08-19",
+            "type": "gym_combined",
+            "title": "GYM — Indoor Threshold + Upper/Core (~135 min)",
+            "details": "PART 1 — Threshold (85 min): 15 min WU. 3x12 min @ Zone 5a/Threshold (100–102% LTHR), RPE 7–8, 5 min recovery between. 10 min CD. PART 2 — Upper Body/Core (50 min): jump-land mechanics drill if cleared: low box step-offs, soft-landing focus, 2x8. Pace Part 1 honestly — tomorrow's hill session is the harder priority.",
+            "indoor": {
+              "isFieldTest": false,
+              "zone": "z5a_threshold",
+              "intervals": "3 x 12 min",
+              "recovery": "5 min easy between"
+            }
+          },
+          {
+            "day": "Thu",
+            "date": "2026-08-20",
+            "type": "outdoor_hills",
+            "title": "OUTDOOR — SFU Hill Climb (105–110 min)",
+            "details": "15 min WU. SFU x3–4 @ 245–265W — race-climbing simulation. 20 min CD. If yesterday's gym day left your legs heavy, dial this back toward tempo effort rather than forcing threshold — protect Saturday's key ride."
+          },
+          {
+            "day": "Fri",
+            "date": "2026-08-21",
+            "type": "rest",
+            "title": "Rest — Protect This Day",
+            "details": "Full rest. Biggest ride of the block is tomorrow."
+          },
+          {
+            "day": "Sat",
+            "date": "2026-08-22",
+            "type": "outdoor_long",
+            "title": "KEY SESSION — OUTDOOR Long Ride 3:45–4:00 (~90–95km)",
+            "details": "Full race simulation. Z2 175–205W base, climbing sections 210–235W. Execute the complete race-day fueling plan (60–90g carb/hr, sodium hourly). Test your race-morning breakfast today. This ride is your best predictor of race readiness."
+          },
+          {
+            "day": "Sun",
+            "date": "2026-08-23",
+            "type": "golf_gym_lower",
+            "title": "Golf + GYM — Lower-Body Strength (65 min)",
+            "details": "Golf 9:15–10:15am. Then: peak loads. Lateral bounds 2x8/side if volleyball-cleared. Yesterday was your longest ride of the block (3:45–4:00) — if quads/tendons are flagging, cut load 20–30% or shift to isometric-only today rather than pushing through."
+          }
+        ]
+      },
+      {
+        "id": "week7",
+        "title": "Week 7",
+        "dates": "Aug 24–30, 2026",
+        "phase": "Taper Begins",
+        "hours": "7.0 h total (5.0 bike / 2.0 strength-rehab)",
+        "lthrPeriod": "lthr2",
+        "days": [
+          {
+            "day": "Mon",
+            "date": "2026-08-24",
+            "type": "recovery",
+            "title": "Easy Recovery / Mobility (20 min)",
+            "details": "Optional easy spin. Mobility work."
+          },
+          {
+            "day": "Tue",
+            "date": "2026-08-25",
+            "type": "rest",
+            "title": "Full Rest",
+            "details": "No structured training."
+          },
+          {
+            "day": "Wed",
+            "date": "2026-08-26",
+            "type": "gym_combined",
+            "title": "GYM — Indoor Bike + Upper/Core (~90 min)",
+            "details": "PART 1 — Sweet Spot (60 min): 15 min WU. 3x8 min @ Zone 4/Sweet Spot (95–99% LTHR), RPE 6–7, 4 min recovery. 10 min CD. PART 2 — Upper Body/Core (30 min): light session. Continue jump-land work if cleared.",
+            "indoor": {
+              "isFieldTest": false,
+              "zone": "z4_sweetspot",
+              "intervals": "3 x 8 min",
+              "recovery": "4 min easy between"
+            }
+          },
+          {
+            "day": "Thu",
+            "date": "2026-08-27",
+            "type": "outdoor_hills",
+            "title": "OUTDOOR — SFU Hill Climb (75 min)",
+            "details": "15 min WU. SFU x2 @ 235–250W, race-pace. 15 min CD."
+          },
+          {
+            "day": "Fri",
+            "date": "2026-08-28",
+            "type": "rest",
+            "title": "Rest",
+            "details": "Full rest."
+          },
+          {
+            "day": "Sat",
+            "date": "2026-08-29",
+            "type": "outdoor_long",
+            "title": "OUTDOOR — Long Ride 2:00–2:30 (~50–58km)",
+            "details": "3x10 min race-pace @ 215–230W, otherwise Z2."
+          },
+          {
+            "day": "Sun",
+            "date": "2026-08-30",
+            "type": "golf_gym_lower",
+            "title": "Golf + GYM — Lower-Body Strength (40 min)",
+            "details": "Golf 9:15–10:15am. Then: volume down ~35%. Keep load/intensity — sharpen quality, not fatigue."
+          }
+        ]
+      },
+      {
+        "id": "week8",
+        "title": "Week 8",
+        "dates": "Aug 31 – Sep 6, 2026",
+        "phase": "Taper",
+        "hours": "5.0 h total (3.5 bike / 1.5 mobility-strength)",
+        "lthrPeriod": "lthr2",
+        "days": [
+          {
+            "day": "Mon",
+            "date": "2026-08-31",
+            "type": "recovery",
+            "title": "Easy Recovery / Mobility (15–20 min)",
+            "details": "Light mobility only. Legs should feel fresh, not worked."
+          },
+          {
+            "day": "Tue",
+            "date": "2026-09-01",
+            "type": "rest",
+            "title": "Full Rest",
+            "details": "No structured training."
+          },
+          {
+            "day": "Wed",
+            "date": "2026-09-02",
+            "type": "gym_combined",
+            "title": "GYM — Indoor Openers + Light Upper/Core (~60 min)",
+            "details": "PART 1 — Openers (35 min): 15 min WU. 4x3 min @ Zone 5b/VO2max (103–106% LTHR), RPE 9, 3 min recovery. 10 min CD. PART 2 — Light Upper/Core (25 min): mobility focus.",
+            "indoor": {
+              "isFieldTest": false,
+              "zone": "z5b_vo2max",
+              "intervals": "4 x 3 min",
+              "recovery": "3 min easy between"
+            }
+          },
+          {
+            "day": "Thu",
+            "date": "2026-09-03",
+            "type": "outdoor_hills",
+            "title": "OUTDOOR — SFU Hill Climb (45 min)",
+            "details": "SFU x1 moderate @ 225–240W. CD."
+          },
+          {
+            "day": "Fri",
+            "date": "2026-09-04",
+            "type": "rest",
+            "title": "Rest",
+            "details": "Full rest."
+          },
+          {
+            "day": "Sat",
+            "date": "2026-09-05",
+            "type": "outdoor_long",
+            "title": "OUTDOOR — Easy Ride (60–75 min)",
+            "details": "Z2 with a few 2 min openers @ 260W. Relaxed."
+          },
+          {
+            "day": "Sun",
+            "date": "2026-09-06",
+            "type": "golf_gym_lower",
+            "title": "Golf + Light Strength/Mobility (20–25 min)",
+            "details": "Golf 9:15–10:15am. Reduced loads, movement quality only. Start easing carbs upward toward evening."
+          }
+        ]
+      },
+      {
+        "id": "raceweek",
+        "title": "Race Week",
+        "dates": "Sep 7–12, 2026",
+        "phase": "Race Week",
+        "hours": "~3.0 h total — rest, carb-load, execute",
+        "lthrPeriod": null,
+        "days": [
+          {
+            "day": "Mon",
+            "date": "2026-09-07",
+            "type": "rest",
+            "title": "Full Rest",
+            "details": "Or 20 min very easy spin. Light mobility. Normal (not yet elevated) carb intake."
+          },
+          {
+            "day": "Tue",
+            "date": "2026-09-08",
+            "type": "outdoor_hills",
+            "title": "OUTDOOR — Easy Spin + Openers (30 min)",
+            "details": "3x1 min openers @ 250W. Ankle proprioception 10 min."
+          },
+          {
+            "day": "Wed",
+            "date": "2026-09-09",
+            "type": "rest",
+            "title": "Rest + Carb-Load Begins",
+            "details": "Begin carb-load: 8–10 g/kg/day using rice, noodles, oatmeal, bagels."
+          },
+          {
+            "day": "Thu",
+            "date": "2026-09-10",
+            "type": "recovery",
+            "title": "Very Easy Spin (20 min)",
+            "details": "Bike check: tires, gears, cleats. Continue carb-loading. Early night."
+          },
+          {
+            "day": "Fri",
+            "date": "2026-09-11",
+            "type": "rest",
+            "title": "Full Rest",
+            "details": "10 min mobility only. Lay out kit, bottles, nutrition. Early to bed."
+          },
+          {
+            "day": "Sat",
+            "date": "2026-09-12",
+            "type": "race",
+            "title": "★ RACE DAY — Target: sub-4:30",
+            "details": "~3–3.5h before: wake, eat oatmeal+banana+honey. ~90min before: stop solid food, sip electrolytes. 0–51km (coastal): Z2 170–200W, draft, conserve. ~51km Britannia Beach aid station: refill. 51–100km (Cheakamus Valley climbing): settle to 210–235W sustained, refuel every aid station (~25km spacing). 100–122km: manage effort into Whistler Village. Finish under 4:30."
+          }
+        ]
+      }
+    ]
+  }

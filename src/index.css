@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* All numeric/dial inputs use the phone's number/decimal keyboard. */
+@layer base {
+  input[type='text'],
+  input[type='number'] {
+    font-size: 16px; /* prevent iOS zoom on focus */
+  }
+  /* Bottom safe-area padding so the tab bar is reachable on notched phones. */
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Hide number-input spinners (we use sliders / steppers instead). */
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer components {
+  .tap {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}
