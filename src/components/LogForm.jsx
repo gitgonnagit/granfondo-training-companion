@@ -167,13 +167,28 @@ export default function LogForm({ iso, dayType, initial, onChange, savedAt, memO
   )
 }
 
-// Persistent "Saved <time>" indicator on the LogForm header. Replaces
-// the previous transient "Saved ✓" — the athlete can now confirm
-// persistence at a glance without watching for a flash. When the app
-// is running in memory-only mode (localStorage full/unavailable), we
-// swap the green stamp for an amber "Not persisting" warning so the
-// green "Saved" can't be misread as "persisted".
+// Persistent relative "Saved ..." indicator on the LogForm header.
+// Replaces both the previous transient "Saved ✓" flash and the
+// minute-precision absolute timestamp. The athlete now sees how
+// recently their last edit was at a glance ("just now", "5 min ago",
+// "3 hr ago", "yesterday at 9:00 AM", "Mon at 9:00 AM", "Jul 14 at
+// 2:47 PM") and the indicator re-renders every 60s so the value ages
+// without needing to switch tabs. When the app is running in
+// memory-only mode (localStorage full/unavailable), we swap the green
+// stamp for an amber "Not persisting" pill that ALSO uses the relative
+// format so the user can see how stale their in-memory buffer is.
 function SaveIndicator({ savedAt, memOnly = false }) {
+  // Re-render every 60s so the relative "ago" / "at" suffix ages
+  // without external state changes. The interval only runs when we
+  // actually have a savedAt to format — otherwise the indicator
+  // returns null and re-rendering is pointless.
+  const [, setTick] = useState(0)
+  useEffect(() => {
+    if (!savedAt) return
+    const id = setInterval(() => setTick((t) => t + 1), 60_000)
+    return () => clearInterval(id)
+  }, [savedAt])
+
   if (memOnly) {
     const lastTime = formatTimeOnly(savedAt)
     return (
@@ -203,29 +218,43 @@ function SaveIndicator({ savedAt, memOnly = false }) {
   )
 }
 
-// Format an ISO timestamp into a short, human-readable label that's
-// meaningful at a glance:
-//   same day:    "Saved 2:47 PM"
-//   yesterday:   "Saved yesterday, 2:47 PM"
-//   within week: "Saved Mon, 2:47 PM"
-//   older:       "Saved Jul 14, 2:47 PM"
-// Returns null if `savedAtIso` is falsy or invalid.
+// Format an ISO timestamp into a short, human-readable relative label
+// that's meaningful at a glance and ages with `now`:
+//   < 1 min:      "Saved just now"
+//   < 60 min:     "Saved 5 min ago"
+//   < 24 hr:      "Saved 3 hr ago"
+//   yesterday:    "Saved yesterday at 9:00 AM"
+//   within week:  "Saved Mon at 9:00 AM"
+//   older:        "Saved Jul 14 at 2:47 PM"
+// Returns null if `savedAtIso` is falsy or invalid. Future timestamps
+// (clock skew) are treated as "just now" — we never want to render
+// "Saved -3 min ago".
 function formatSavedAt(savedAtIso, now = new Date()) {
   if (!savedAtIso) return null
   const date = new Date(savedAtIso)
   if (Number.isNaN(date.getTime())) return null
+
+  const diffMs = now.getTime() - date.getTime()
+  if (diffMs < 60_000) return 'Saved just now'
+  const diffMin = Math.floor(diffMs / 60_000)
+  if (diffMin < 60) return `Saved ${diffMin} min ago`
+  const diffHr = Math.floor(diffMin / 60)
+  if (diffHr < 24) return `Saved ${diffHr} hr ago`
+
+  // Older than 24h — calendar-relative with the wall-clock time of
+  // the save appended so the user sees WHEN on that older day it
+  // happened (e.g. morning vs evening bike).
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const savedDay = new Date(date.getFullYear(), date.getMonth(), date.getDate())
   const diffDays = Math.round((today.getTime() - savedDay.getTime()) / 86400000)
   const time = date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
-  if (diffDays === 0) return `Saved ${time}`
-  if (diffDays === 1) return `Saved yesterday, ${time}`
+  if (diffDays === 1) return `Saved yesterday at ${time}`
   if (diffDays < 7) {
     const day = date.toLocaleDateString(undefined, { weekday: 'short' })
-    return `Saved ${day}, ${time}`
+    return `Saved ${day} at ${time}`
   }
   const long = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-  return `Saved ${long}, ${time}`
+  return `Saved ${long} at ${time}`
 }
 
 // Strip the "Saved " prefix from formatSavedAt so the timestamp can be
