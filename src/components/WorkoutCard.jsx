@@ -82,7 +82,7 @@ export default function WorkoutCard({ day, week, lthr, onJumpToSettings }) {
 
       {/* Structured exercise protocol — replaces the "same as Week N" shorthand */}
       {showProtocolList && (
-        <ProtocolList upper={upper} lower={lower} dayType={day.type} />
+        <ProtocolList upper={upper} lower={lower} />
       )}
 
       {/* Original prose from plan-data.json — kept for color/context */}
@@ -93,21 +93,18 @@ export default function WorkoutCard({ day, week, lthr, onJumpToSettings }) {
   )
 }
 
-function ProtocolList({ upper, lower, dayType }) {
+function ProtocolList({ upper, lower }) {
   const items = upper || lower
   const sectionTitle = upper
-    ? 'Part 2 — Upper Body / Core Protocol'
-    : 'Lower-Body Strength Protocol'
+    ? 'Part 2 — Upper Body / Core Protocol · Wed gym day'
+    : 'Lower-Body Strength Protocol · Sun golf + gym day'
   return (
     <div
       className="mx-4 mt-3 rounded-xl bg-slate-50 ring-1 ring-slate-200 px-3 py-3"
       data-testid="protocol-list"
     >
       <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-600 mb-2">
-        {sectionTitle}{' '}
-        {upper
-          ? '· (Wed gym day)'
-          : '· (Sun golf + gym day)'}
+        {sectionTitle}
       </p>
       <ol className="space-y-1.5 text-[14px] text-slate-800 list-decimal pl-5 marker:text-slate-400">
         {items.map((ex, i) => (
