@@ -8,6 +8,7 @@ import {
   addDays,
   defaultSelectedDate,
   findDay,
+  getCurrentWeekIndex,
   isInPlan,
   prettyDate,
   prettyDateLong,
@@ -16,6 +17,7 @@ import {
   PLAN_END,
   PLAN_START,
 } from '../lib/dateUtils.js'
+import planData from '../data/planData.json' with { type: 'json' }
 import WorkoutCard from './WorkoutCard.jsx'
 import NutritionCard from './NutritionCard.jsx'
 import RedFlagBanner from './RedFlagBanner.jsx'
@@ -104,6 +106,7 @@ function Header({ selectedDate, onSelectDate, week }) {
   const prevDay = useMemo(() => addDays(selectedDate, -1), [selectedDate])
   const nextDay = useMemo(() => addDays(selectedDate, 1), [selectedDate])
   const countdown = daysUntilTarget(RACE_DATE, selectedDate)
+  const weekIdx = getCurrentWeekIndex(selectedDate)
 
   return (
     <header className="rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-sky-900 text-white px-4 py-4 shadow-lg">
@@ -138,6 +141,53 @@ function Header({ selectedDate, onSelectDate, week }) {
           Next <span aria-hidden>›</span>
         </button>
       </div>
+      <WeekProgress
+        weeks={planData.weeks}
+        currentIdx={weekIdx}
+        onSelectDate={onSelectDate}
+      />
     </header>
+  )
+}
+
+// Tiny 9-dot plan progress — Week 1 → Race Week. Past dots are filled
+// in a muted sky tone, the current dot inverts (white face on a ring),
+// future dots are outlined. Tapping any dot jumps the Today tab to the
+// first day of that week (cheap, lets the athlete leap weeks).
+function WeekProgress({ weeks, currentIdx, onSelectDate }) {
+  return (
+    <div
+      className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between gap-1"
+      role="navigation"
+      aria-label="Training plan progress"
+    >
+      {weeks.map((w, i) => {
+        const isCurrent = i === currentIdx
+        const isPast = currentIdx >= 0 && i < currentIdx
+        const isRace = w.id === 'raceweek'
+        return (
+          <button
+            key={w.id}
+            type="button"
+            onClick={() => w.days?.[0] && onSelectDate(w.days[0].date)}
+            aria-current={isCurrent ? 'step' : undefined}
+            aria-label={`${w.title}${isCurrent ? ' (current)' : ''}`}
+            className="tap flex-1 flex flex-col items-center gap-1"
+          >
+            <span
+              className={`block h-7 w-7 rounded-full text-[11px] font-bold flex items-center justify-center transition ${
+                isCurrent
+                  ? 'bg-white text-sky-900 shadow ring-2 ring-sky-200'
+                  : isPast
+                    ? 'bg-sky-700/50 text-white'
+                    : 'ring-1 ring-white/40 text-white/80'
+              }`}
+            >
+              {isRace ? '★' : i + 1}
+            </span>
+          </button>
+        )
+      })}
+    </div>
   )
 }

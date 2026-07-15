@@ -52,6 +52,13 @@ export function findDay(iso) {
   return null
 }
 
+// Index of the week containing `iso` in `planData.weeks` (0..8), or
+// -1 if `iso` doesn't fall on any plan day. Week 0 is "week1", week 7
+// is "week8", week 8 is "raceweek".
+export function getCurrentWeekIndex(iso) {
+  return planData.weeks.findIndex((w) => w.days.some((d) => d.date === iso))
+}
+
 // Default selected date on first load: the device's today, only if it
 // falls inside the plan window; otherwise the plan start.
 export function defaultSelectedDate() {
