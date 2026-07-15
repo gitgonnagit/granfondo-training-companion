@@ -178,13 +178,22 @@ export default function LogForm({ iso, dayType, initial, onChange, savedAt, memO
 // stamp for an amber "Not persisting" pill that ALSO uses the relative
 // format so the user can see how stale their in-memory buffer is.
 function SaveIndicator({ savedAt, memOnly = false }) {
-  // Auto-refresh every 60s so the relative "ago" / "at" suffix ages
-  // without external state changes. NOTE: this re-render is purely
-  // visual — the SR-only live region below is keyed on `savedAt`
-  // (not on the tick), so screen readers never receive minute-cadence
-  // announcements. They only hear "Saved …" on actual save events
-  // (when `savedAt` changes), which is the only state transition
-  // that carries new information for SR users.
+  // Auto-refresh every 60s so the visible relative "ago" / "at"
+  // suffix ages without external state changes. NOTE: this re-render
+  // is purely visual — the SR-only live region below holds CONSTANT
+  // content ("Saved" / "Not persisting"), keyed on `savedAt`. The
+  // keyed DOM remount forces a one-shot SR announcement only when
+  // an actual save event fires (when `savedAt` changes); minute-tick
+  // React re-renders leave the live-region DOM in place with the
+  // same constant content, so SR never hears the 60-second cadence.
+  // (Most SRs — NVDA, JAWS, VoiceOver — also react to textContent /
+  // aria-label mutates inside an EXISTING aria-live region even when
+  // the element isn't re-mounted, so the live region MUST hold
+  // constant content; only the keyed re-mount should carry semantic
+  // info.) Trade-off accepted: SR users hear "Saved" / "Not
+  // persisting" without the relative-time detail — they can navigate
+  // the form to read the visible indicator instead. Bulk minute-tick
+  // SR noise would be the worse regression.
   const [, setTick] = useState(0)
   useEffect(() => {
     if (!savedAt) return
@@ -194,26 +203,21 @@ function SaveIndicator({ savedAt, memOnly = false }) {
 
   if (memOnly) {
     const lastTime = formatTimeOnly(savedAt)
-    const visibleText = lastTime ? `Not persisting · ${lastTime}` : 'Not persisting'
-    const srText = lastTime
-      ? `Not persisting since ${lastTime}`
-      : 'Not persisting — see banner above'
     return (
       <span
         className="text-[12px] font-semibold text-amber-700 inline-flex items-center gap-1"
         title="Browser storage is full or unavailable. Your logs are held in memory for this session only."
       >
         <span aria-hidden="true">⚠</span>
-        <span aria-hidden="true">{visibleText}</span>
+        <span aria-hidden="true">{lastTime ? `Not persisting · ${lastTime}` : 'Not persisting'}</span>
         {savedAt && (
           <span
             key={`amber-${savedAt}`}
             role="status"
             aria-live="polite"
-            aria-label={srText}
             className="sr-only"
           >
-            {srText}
+            Not persisting
           </span>
         )}
       </span>
@@ -233,10 +237,9 @@ function SaveIndicator({ savedAt, memOnly = false }) {
         key={`green-${savedAt}`}
         role="status"
         aria-live="polite"
-        aria-label={label}
         className="sr-only"
       >
-        {label}
+        Saved
       </span>
     </span>
   )
