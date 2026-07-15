@@ -3,7 +3,7 @@
 //
 // State held here: selectedDate (ISO). Reads logs+settings parent props.
 
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import {
   addDays,
   defaultSelectedDate,
@@ -60,6 +60,18 @@ export default function TodayView({ logs, settings, selectedDate, onSelectDate, 
   const week = dayPair.week
   const lthr = lthrForWeek(week, settings)
 
+  // Recovery-day CTA callback invoked by RedFlagBanner when the user
+  // taps "Swap to recovery day" / "Bump carbs + recover". Writes
+  // `completed: false` (and nothing else — does not pollute notes, and
+  // does not silence the flag itself; the banner remains visible so
+  // tomorrow's HRV/RHR or weight check still has data to evaluate).
+  const onSwapToRecoveryDay = useCallback(
+    () => {
+      onSetLog(selectedDate, { ...(logs[selectedDate] || {}), completed: false })
+    },
+    [selectedDate, logs, onSetLog],
+  )
+
   return (
     <div className="px-4 py-5 space-y-4">
       <Header
@@ -74,7 +86,14 @@ export default function TodayView({ logs, settings, selectedDate, onSelectDate, 
 
       {flags.length > 0 && (
         <div className="space-y-2">
-          {flags.map((f) => <RedFlagBanner key={f.id} flag={f} />)}
+          {flags.map((f) => (
+            <RedFlagBanner
+              key={f.id}
+              flag={f}
+              iso={selectedDate}
+              onSwapToRecoveryDay={onSwapToRecoveryDay}
+            />
+          ))}
         </div>
       )}
 
