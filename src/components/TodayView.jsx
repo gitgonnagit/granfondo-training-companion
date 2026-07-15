@@ -22,6 +22,7 @@ import WorkoutCard from './WorkoutCard.jsx'
 import NutritionCard from './NutritionCard.jsx'
 import RedFlagBanner from './RedFlagBanner.jsx'
 import RecentFlagsWidget from './RecentFlagsWidget.jsx'
+import AdherenceGrid from './AdherenceGrid.jsx'
 import LogForm from './LogForm.jsx'
 import { evaluateAllFlags } from '../lib/redFlags.js'
 import { lthrForWeek } from '../lib/zoneCalc.js'
@@ -66,6 +67,8 @@ export default function TodayView({ logs, settings, selectedDate, onSelectDate, 
         onSelectDate={onSelectDate}
         week={week}
       />
+
+      <AdherenceGrid logs={logs} week={week} onSelectDate={onSelectDate} />
 
       <RecentFlagsWidget logs={logs} />
 
