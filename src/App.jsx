@@ -127,6 +127,7 @@ export default function App() {
             onSelectDate={onSelectDate}
             onSetLog={setLog}
             onJumpToSettings={() => setTab('settings')}
+            memOnly={memOnly}
           />
         )}
         {state.activeTab === 'history' && (
