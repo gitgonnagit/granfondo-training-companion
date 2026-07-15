@@ -203,6 +203,7 @@ function NumberRow({ label, field, value, min, max, step, onChange }) {
       <input
         type="number"
         inputMode="numeric"
+        name={`f-num-${field}`}
         value={value == null ? '' : value}
         min={min}
         max={max}
