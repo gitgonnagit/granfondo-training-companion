@@ -23,7 +23,7 @@ const DEFAULTS = {
   updatedAt: '',
 }
 
-export default function LogForm({ iso, dayType, initial, onChange, saveStatus }) {
+export default function LogForm({ iso, dayType, initial, onChange, savedAt }) {
   // Initialize from `initial` (the persisted entry), defaulting to an
   // empty template.
   const [entry, setEntry] = useState(() => normalizeLog({ ...DEFAULTS, ...(initial || {}) }))
@@ -54,7 +54,7 @@ export default function LogForm({ iso, dayType, initial, onChange, saveStatus })
           </p>
           <h2 className="text-base font-semibold text-slate-900">{prettyDate(iso)}</h2>
         </div>
-        <SaveIndicator status={saveStatus} />
+        <SaveIndicator savedAt={savedAt} />
       </header>
 
       <div className="px-4 py-3 space-y-1.5">
@@ -167,19 +167,47 @@ export default function LogForm({ iso, dayType, initial, onChange, saveStatus })
   )
 }
 
-function SaveIndicator({ status }) {
-  if (!status) return null
-  const map = {
-    saving: { label: 'Saving…', tone: 'text-slate-400' },
-    saved: { label: 'Saved ✓', tone: 'text-emerald-600' },
-    failed: { label: 'Saved in memory', tone: 'text-amber-600' },
-  }
-  const cfg = map[status] || map.saving
+// Persistent "Saved <time>" indicator on the LogForm header. Replaces
+// the previous transient "Saved ✓" — the athlete can now confirm
+// persistence at a glance without watching for a flash.
+function SaveIndicator({ savedAt }) {
+  const label = formatSavedAt(savedAt)
+  if (!label) return null
   return (
-    <span aria-live="polite" className={`text-[12px] font-medium ${cfg.tone}`}>
-      {cfg.label}
+    <span
+      aria-live="polite"
+      aria-label={label}
+      className="text-[12px] font-medium text-emerald-600 inline-flex items-center gap-1"
+    >
+      <span aria-hidden="true">✓</span>
+      <span>{label}</span>
     </span>
   )
+}
+
+// Format an ISO timestamp into a short, human-readable label that's
+// meaningful at a glance:
+//   same day:    "Saved 2:47 PM"
+//   yesterday:   "Saved yesterday, 2:47 PM"
+//   within week: "Saved Mon, 2:47 PM"
+//   older:       "Saved Jul 14, 2:47 PM"
+// Returns null if `savedAtIso` is falsy or invalid.
+function formatSavedAt(savedAtIso, now = new Date()) {
+  if (!savedAtIso) return null
+  const date = new Date(savedAtIso)
+  if (Number.isNaN(date.getTime())) return null
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const savedDay = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  const diffDays = Math.round((today.getTime() - savedDay.getTime()) / 86400000)
+  const time = date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+  if (diffDays === 0) return `Saved ${time}`
+  if (diffDays === 1) return `Saved yesterday, ${time}`
+  if (diffDays < 7) {
+    const day = date.toLocaleDateString(undefined, { weekday: 'short' })
+    return `Saved ${day}, ${time}`
+  }
+  const long = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+  return `Saved ${long}, ${time}`
 }
 
 function NumberRow({ label, field, value, min, max, step, onChange }) {

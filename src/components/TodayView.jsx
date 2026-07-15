@@ -3,7 +3,7 @@
 //
 // State held here: selectedDate (ISO). Reads logs+settings parent props.
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import {
   addDays,
   defaultSelectedDate,
@@ -29,15 +29,6 @@ export default function TodayView({ logs, settings, selectedDate, onSelectDate, 
   const inPlan = isInPlan(selectedDate)
   const dayPair = inPlan ? findDay(selectedDate) : null
   const flags = useMemo(() => evaluateAllFlags(logs, selectedDate), [logs, selectedDate])
-
-  // Debounced save indicator: "Saving..." → "Saved ✓"
-  const [saveStatus, setSaveStatus] = useState(null)
-  // Tie the indicator to log changes from this view; parent owns persistence.
-  useEffect(() => {
-    setSaveStatus('saved')
-    const t = setTimeout(() => setSaveStatus(null), 1500)
-    return () => clearTimeout(t)
-  }, [logs])
 
   if (!inPlan) {
     return (
@@ -96,7 +87,7 @@ export default function TodayView({ logs, settings, selectedDate, onSelectDate, 
         dayType={day.type}
         initial={logs[selectedDate]}
         onChange={(entry) => onSetLog(selectedDate, entry)}
-        saveStatus={saveStatus}
+        savedAt={logs[selectedDate]?.updatedAt ?? null}
       />
     </div>
   )
