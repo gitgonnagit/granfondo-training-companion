@@ -178,10 +178,13 @@ export default function LogForm({ iso, dayType, initial, onChange, savedAt, memO
 // stamp for an amber "Not persisting" pill that ALSO uses the relative
 // format so the user can see how stale their in-memory buffer is.
 function SaveIndicator({ savedAt, memOnly = false }) {
-  // Re-render every 60s so the relative "ago" / "at" suffix ages
-  // without external state changes. The interval only runs when we
-  // actually have a savedAt to format — otherwise the indicator
-  // returns null and re-rendering is pointless.
+  // Auto-refresh every 60s so the relative "ago" / "at" suffix ages
+  // without external state changes. NOTE: this re-render is purely
+  // visual — the SR-only live region below is keyed on `savedAt`
+  // (not on the tick), so screen readers never receive minute-cadence
+  // announcements. They only hear "Saved …" on actual save events
+  // (when `savedAt` changes), which is the only state transition
+  // that carries new information for SR users.
   const [, setTick] = useState(0)
   useEffect(() => {
     if (!savedAt) return
@@ -191,29 +194,50 @@ function SaveIndicator({ savedAt, memOnly = false }) {
 
   if (memOnly) {
     const lastTime = formatTimeOnly(savedAt)
+    const visibleText = lastTime ? `Not persisting · ${lastTime}` : 'Not persisting'
+    const srText = lastTime
+      ? `Not persisting since ${lastTime}`
+      : 'Not persisting — see banner above'
     return (
       <span
-        role="status"
-        aria-live="polite"
-        aria-label={lastTime ? `Not persisting since ${lastTime}` : 'Not persisting — see banner above'}
-        title="Browser storage is full or unavailable. Your logs are held in memory for this session only."
         className="text-[12px] font-semibold text-amber-700 inline-flex items-center gap-1"
+        title="Browser storage is full or unavailable. Your logs are held in memory for this session only."
       >
         <span aria-hidden="true">⚠</span>
-        <span>Not persisting{lastTime ? ` · ${lastTime}` : ''}</span>
+        <span aria-hidden="true">{visibleText}</span>
+        {savedAt && (
+          <span
+            key={`amber-${savedAt}`}
+            role="status"
+            aria-live="polite"
+            aria-label={srText}
+            className="sr-only"
+          >
+            {srText}
+          </span>
+        )}
       </span>
     )
   }
+
   const label = formatSavedAt(savedAt)
   if (!label) return null
   return (
     <span
-      aria-live="polite"
-      aria-label={label}
       className="text-[12px] font-medium text-emerald-600 inline-flex items-center gap-1"
+      title={label}
     >
       <span aria-hidden="true">✓</span>
-      <span>{label}</span>
+      <span aria-hidden="true">{label}</span>
+      <span
+        key={`green-${savedAt}`}
+        role="status"
+        aria-live="polite"
+        aria-label={label}
+        className="sr-only"
+      >
+        {label}
+      </span>
     </span>
   )
 }
