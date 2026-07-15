@@ -130,9 +130,14 @@ const expect = (cond, label) => {
   //   A uses off 6,4,2,0  -> days 7-13, 7-15, 7-17, 7-19
   const logs = {}
   const today = '2026-07-19'
-  for (const off of [20, 18, 16]) logs[addDays(today, -off)] = { bodyWeightKg: 86 }
-  for (const off of [12, 10, 8]) logs[addDays(today, -off)] = { bodyWeightKg: 85 }
-  for (const off of [6, 4, 2, 0]) logs[addDays(today, -off)] = { bodyWeightKg: 84 }
+  // Floor-rounded kg→lbs (×2.20462) preserves the 1.16% / 1.18% drop
+  // margins that were deliberately tuned in the original kg fixtures:
+  //   A: 185 lbs (192.4→185 = 1.16% drop from prior week's 187 lbs avg)
+  //   B: 187 lbs (195.5→187 = 1.16% drop from priorPrior week's 189 lbs avg)
+  //   C: 189 lbs
+  for (const off of [20, 18, 16]) logs[addDays(today, -off)] = { bodyWeightLbs: 189 }
+  for (const off of [12, 10, 8]) logs[addDays(today, -off)] = { bodyWeightLbs: 187 }
+  for (const off of [6, 4, 2, 0]) logs[addDays(today, -off)] = { bodyWeightLbs: 185 }
   expect(weightFlag(logs, today) === true, 'weight: two consecutive 1%+ drops fires')
 }
 {
@@ -140,8 +145,8 @@ const expect = (cond, label) => {
   // but no second prior comparator => flag should NOT fire, per spec.
   const logs = {}
   const today = '2026-07-19'
-  for (const off of [12, 10, 8]) logs[addDays(today, -off)] = { bodyWeightKg: 85 }
-  for (const off of [6, 4, 2, 0]) logs[addDays(today, -off)] = { bodyWeightKg: 84 }
+  for (const off of [12, 10, 8]) logs[addDays(today, -off)] = { bodyWeightLbs: 187 }
+  for (const off of [6, 4, 2, 0]) logs[addDays(today, -off)] = { bodyWeightLbs: 184 }
   expect(weightFlag(logs, today) === false, 'weight: one drop not enough')
 }
 {
@@ -149,7 +154,7 @@ const expect = (cond, label) => {
   const logs = {}
   const today = '2026-07-19'
   for (let off = 21; off >= 0; off--) {
-    if (off % 2 === 0) logs[addDays(today, -off)] = { bodyWeightKg: 84 }
+    if (off % 2 === 0) logs[addDays(today, -off)] = { bodyWeightLbs: 184 }
   }
   expect(weightFlag(logs, today) === false, 'weight: stable weight NOT fired')
 }

@@ -23,7 +23,7 @@ const DEFAULTS = {
   hrv: null,
   rhr: null,
   sleepHours: null,
-  bodyWeightKg: null,
+  bodyWeightLbs: null,
   sessionFeltHarder: false,
   completed: false,
   notes: '',
@@ -131,12 +131,12 @@ export default function LogForm({ iso, dayType, initial, onChange, savedAt, memO
           onChange={(v) => update({ sleepHours: v })}
         />
         <NumberInput
-          label="Body weight (kg)"
-          field="bodyWeightKg"
-          value={entry.bodyWeightKg}
+          label="Body weight (lbs)"
+          field="bodyWeightLbs"
+          value={entry.bodyWeightLbs}
           inputMode="decimal"
-          step={0.1}
-          onChange={(v) => update({ bodyWeightKg: v })}
+          step={0.2}
+          onChange={(v) => update({ bodyWeightLbs: v })}
         />
       </div>
 

@@ -57,7 +57,7 @@ export function normalizeLog(raw) {
     hrv: nullableNumber(raw.hrv),
     rhr: nullableNumber(raw.rhr),
     sleepHours: nullableNumber(raw.sleepHours),
-    bodyWeightKg: nullableNumber(raw.bodyWeightKg),
+    bodyWeightLbs: nullableNumber(raw.bodyWeightLbs),
     sessionFeltHarder: !!raw.sessionFeltHarder,
     completed: !!raw.completed,
     notes: typeof raw.notes === 'string' ? raw.notes : '',

@@ -158,7 +158,7 @@ export function performanceFlag(logs, iso) {
 
 // ---------- rule 5: weight_flag ----------
 //
-//   true if the average bodyWeightKg over trailing 7 days is > 1% lower
+//   true if the average bodyWeightLbs over trailing 7 days is > 1% lower
 //   than the average over the 7 days before that, sustained across TWO
 //   CONSECUTIVE such weekly comparisons (i.e. the drop persisted into
 //   a second week).
@@ -169,11 +169,11 @@ export function weightFlag(logs, iso) {
   // Recent week: today + the previous 6 calendar days (window A)
   // Prior week:   days -7..-13 (window B)
   // The current comparison is: avg(A) vs avg(B). Drop must be > 1%.
-  const recentWeek = numericEntries(logs, 'bodyWeightKg', {
+  const recentWeek = numericEntries(logs, 'bodyWeightLbs', {
     to: iso,
     from: addDays(iso, -6),
   })
-  const priorWeek = numericEntries(logs, 'bodyWeightKg', {
+  const priorWeek = numericEntries(logs, 'bodyWeightLbs', {
     to: addDays(iso, -7),
     from: addDays(iso, -13),
   })
@@ -190,7 +190,7 @@ export function weightFlag(logs, iso) {
   // Now the *prior* weekly comparison: avg(B) vs avg(C), where C is the
   // 7-day window before B. Drop must ALSO be > 1% there. That's what
   // "sustained across two consecutive weekly comparisons" means.
-  const priorPriorWeek = numericEntries(logs, 'bodyWeightKg', {
+  const priorPriorWeek = numericEntries(logs, 'bodyWeightLbs', {
     to: addDays(iso, -14),
     from: addDays(iso, -20),
   })

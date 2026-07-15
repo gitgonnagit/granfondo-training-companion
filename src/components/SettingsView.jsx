@@ -203,7 +203,7 @@ function toCsv(logs) {
     'hrv',
     'rhr',
     'sleepHours',
-    'bodyWeightKg',
+    'bodyWeightLbs',
     'sessionFeltHarder',
     'completed',
     'notes',

@@ -145,7 +145,7 @@
         "rule": "Logged body weight down more than 1% in a rolling 7-day window, sustained across 2 consecutive 7-day windows",
         "action": "Increase daily carbohydrate intake — you're likely under-fueling relative to training load.",
         "fields": [
-          "bodyWeightKg"
+          "bodyWeightLbs"
         ]
       }
     ],
