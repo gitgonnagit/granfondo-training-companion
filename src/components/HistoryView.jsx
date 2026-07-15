@@ -21,7 +21,6 @@ export default function HistoryView({ logs, onSelectDate }) {
         log,
         type: dp?.day?.type ?? 'rest',
         title: dp?.day?.title ?? '(free date)',
-        anyFlag: triggeredIds.length > 0,
         triggeredIds,
       }
     })
@@ -121,7 +120,7 @@ const FLAG_BADGES = {
   tendon_pain:     { short: 'Tendon',   tone: 'amber', title: 'Tendon pain elevated' },
   ankle_flag:      { short: 'Ankle',    tone: 'red',   title: 'Ankle red flag' },
   recovery_flag:   { short: 'Recovery', tone: 'amber', title: 'Recovery markers flagged' },
-  performance_flag:{ short: 'Pace',     tone: 'amber', title: 'Session harder than expected' },
+  performance_flag:{ short: 'Effort↑', tone: 'amber', title: 'Session harder than expected' },
   weight_flag:     { short: 'Weight',   tone: 'amber', title: 'Unintended weight loss' },
 }
 
