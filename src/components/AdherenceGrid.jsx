@@ -24,16 +24,16 @@ function cellState(day, log, today) {
       : { tone: 'today', glyph: '●', label: log ? 'today, log open' : 'today, no log yet' }
   }
   if (log?.completed) return { tone: 'completed', glyph: '✓', label: 'completed' }
-  if (log) return { tone: 'partial', glyph: '!', label: 'logged but not completed' }
-  return { tone: 'missed', glyph: '—', label: 'no log' }
+  if (log) return { tone: 'partial', glyph: '○', label: 'logged but not completed' }
+  return { tone: 'missed', glyph: '✕', label: 'no log' }
 }
 
 const TONE_CLASS = {
-  future:    'bg-white text-slate-400 ring-slate-200',
-  today:     'bg-sky-50  text-sky-800   ring-sky-400',
-  completed: 'bg-emerald-100 text-emerald-800 ring-emerald-300',
-  partial:   'bg-amber-100 text-amber-800 ring-amber-300',
-  missed:    'bg-slate-100 text-slate-500 ring-slate-200',
+  future:    'bg-white text-slate-400 ring-1 ring-slate-200',
+  today:     'bg-sky-50  text-sky-900   ring-2 ring-sky-500 font-bold',
+  completed: 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-300',
+  partial:   'bg-amber-100 text-amber-800 ring-1 ring-amber-300',
+  missed:    'bg-slate-100 text-slate-500 ring-1 ring-slate-200',
 }
 
 function relativeTime(iso) {
@@ -73,13 +73,19 @@ export default function AdherenceGrid({ logs, week, onSelectDate }) {
           Adherence · {week.title}
         </p>
         <p className="text-[12px] font-medium text-slate-600">
-          <span className="tabular-nums font-semibold text-slate-800">{summary.completed}</span>
-          <span aria-hidden="true"> / </span>
-          <span className="tabular-nums">{summary.past}</span>
-          <span className="ml-1">completed</span>
+          {summary.past === 0 ? (
+            <span className="text-slate-500">no past days yet</span>
+          ) : (
+            <>
+              <span className="tabular-nums font-semibold text-slate-800">{summary.completed}</span>
+              <span aria-hidden="true"> / </span>
+              <span className="tabular-nums">{summary.past}</span>
+              <span className="ml-1">completed</span>
+            </>
+          )}
         </p>
       </div>
-      <div className="grid grid-cols-7 gap-1.5" role="list">
+      <div className="grid grid-cols-7 gap-1.5">
         {week.days.map((day) => {
           const log = logs[day.date]
           const state = cellState(day, log, today)
@@ -93,11 +99,10 @@ export default function AdherenceGrid({ logs, week, onSelectDate }) {
               key={day.date}
               type="button"
               onClick={() => onSelectDate(day.date)}
-              role="listitem"
               aria-current={isToday ? 'true' : undefined}
               aria-label={aria}
               title={fullTitle}
-              className={`min-h-[44px] rounded-lg ring-1 px-1 py-1 flex flex-col items-center justify-center text-center transition active:scale-95 ${TONE_CLASS[state.tone]} ${
+              className={`min-h-[44px] rounded-lg px-1 py-1 flex flex-col items-center justify-center text-center transition active:scale-95 ${TONE_CLASS[state.tone]} ${
                 state.tone === 'future' ? 'opacity-60 hover:opacity-100' : 'hover:brightness-95'
               }`}
             >
