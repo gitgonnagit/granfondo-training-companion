@@ -25,7 +25,7 @@ import LogForm from './LogForm.jsx'
 import { evaluateAllFlags } from '../lib/redFlags.js'
 import { lthrForWeek } from '../lib/zoneCalc.js'
 
-export default function TodayView({ logs, settings, selectedDate, onSelectDate, onJumpToSettings, onSetLog }) {
+export default function TodayView({ logs, settings, selectedDate, onSelectDate, onJumpToSettings, onSetLog, memOnly = false }) {
   const inPlan = isInPlan(selectedDate)
   const dayPair = inPlan ? findDay(selectedDate) : null
   const flags = useMemo(() => evaluateAllFlags(logs, selectedDate), [logs, selectedDate])
@@ -88,6 +88,7 @@ export default function TodayView({ logs, settings, selectedDate, onSelectDate, 
         initial={logs[selectedDate]}
         onChange={(entry) => onSetLog(selectedDate, entry)}
         savedAt={logs[selectedDate]?.updatedAt ?? null}
+        memOnly={memOnly}
       />
     </div>
   )

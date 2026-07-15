@@ -23,7 +23,7 @@ const DEFAULTS = {
   updatedAt: '',
 }
 
-export default function LogForm({ iso, dayType, initial, onChange, savedAt }) {
+export default function LogForm({ iso, dayType, initial, onChange, savedAt, memOnly = false }) {
   // Initialize from `initial` (the persisted entry), defaulting to an
   // empty template.
   const [entry, setEntry] = useState(() => normalizeLog({ ...DEFAULTS, ...(initial || {}) }))
@@ -54,7 +54,7 @@ export default function LogForm({ iso, dayType, initial, onChange, savedAt }) {
           </p>
           <h2 className="text-base font-semibold text-slate-900">{prettyDate(iso)}</h2>
         </div>
-        <SaveIndicator savedAt={savedAt} />
+        <SaveIndicator savedAt={savedAt} memOnly={memOnly} />
       </header>
 
       <div className="px-4 py-3 space-y-1.5">
@@ -169,8 +169,25 @@ export default function LogForm({ iso, dayType, initial, onChange, savedAt }) {
 
 // Persistent "Saved <time>" indicator on the LogForm header. Replaces
 // the previous transient "Saved ✓" — the athlete can now confirm
-// persistence at a glance without watching for a flash.
-function SaveIndicator({ savedAt }) {
+// persistence at a glance without watching for a flash. When the app
+// is running in memory-only mode (localStorage full/unavailable), we
+// swap the green stamp for an amber "Not persisting" warning so the
+// green "Saved" can't be misread as "persisted".
+function SaveIndicator({ savedAt, memOnly = false }) {
+  if (memOnly) {
+    return (
+      <span
+        role="status"
+        aria-live="polite"
+        aria-label="Not persisting — see banner above"
+        title="Browser storage is full or unavailable. Your logs are held in memory for this session only."
+        className="text-[12px] font-semibold text-amber-700 inline-flex items-center gap-1"
+      >
+        <span aria-hidden="true">⚠</span>
+        <span>Not persisting</span>
+      </span>
+    )
+  }
   const label = formatSavedAt(savedAt)
   if (!label) return null
   return (
