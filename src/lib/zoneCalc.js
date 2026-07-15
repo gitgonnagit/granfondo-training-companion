@@ -2,7 +2,7 @@
 // `% of LTHR` ranges — at runtime we multiply the athlete's entered
 // LTHR by those percentages and round to an integer BPM.
 
-import planData from '../data/planData.json'
+import planData from '../data/planData.json' with { type: 'json' }
 
 export function getHrZone(zoneId) {
   return planData.hrZones.find((z) => z.id === zoneId) || null
@@ -25,31 +25,48 @@ export function computeBpmRange(zoneId, lthr) {
 }
 
 // Compose the full target-line shown on an indoor session card.
-// Spec §4.1 says: "Target: 173–180 bpm (Zone 4 / Sweet Spot,
-// 95–99% of LTHR 182) · RPE 6–7 · Cadence 90–95rpm · 3 × 8 min,
-// 4 min easy between"
+//
+// Per build.md §4.1: when LTHR is not yet entered, the %/RPE/cadence
+// info STILL APPEARS — only the bpm number is replaced with the %
+// range and a "see Settings" prompt is added. We split the head from
+// the tail so callers can style them differently.
+//   With LTHR:    "Target: 173–180 bpm (Zone 4, 95–99% of LTHR 182) · RPE · Cadence · …"
+//   Without LTHR: "Target: 95–99% LTHR · RPE · Cadence · …"
+//
+// Returns an object: { head: string, tail: string, hasZone: bool, hasLthr: bool }
+// — never a single string with brittle regex delimiters.
 export function indoorTargetLine(indoor, lthr) {
-  if (!indoor) return ''
-  if (indoor.isFieldTest) return 'Field test — see protocol below'
+  if (!indoor) return { head: '', tail: '', hasZone: false, hasLthr: false }
+  if (indoor.isFieldTest) {
+    return { head: 'Field test — see protocol below', tail: '', hasZone: false, hasLthr: false }
+  }
   const z = indoor.zone ? getHrZone(indoor.zone) : null
-  const range = indoor.zone ? computeBpmRange(indoor.zone, lthr) : null
-  const parts = []
-  if (range && z) {
-    parts.push(
-      `Target: ${range.min}–${range.max} bpm (${z.label}, ${range.lthrPctMin}–${range.lthrPctMax}% of LTHR ${lthr})`,
-    )
-  } else if (z) {
-    parts.push(
-      `Target: ${z.pctLTHRmin}–${z.pctLTHRmax}% of LTHR — enter LTHR in Settings to see bpm.`,
-    )
-  }
+  const tailBits = []
   if (z) {
-    parts.push(`RPE ${z.rpe}`)
-    parts.push(`Cadence ${z.cadence}`)
+    tailBits.push(`RPE ${z.rpe}`)
+    tailBits.push(`Cadence ${z.cadence}`)
   }
-  if (indoor.intervals) parts.push(indoor.intervals)
-  if (indoor.recovery) parts.push(indoor.recovery)
-  return parts.join(' · ')
+  if (indoor.intervals) tailBits.push(indoor.intervals)
+  if (indoor.recovery) tailBits.push(indoor.recovery)
+  const tail = tailBits.join(' · ')
+
+  if (!z) return { head: tail, tail: '', hasZone: false, hasLthr: !!lthr }
+
+  if (lthr) {
+    const range = computeBpmRange(indoor.zone, lthr)
+    return {
+      head: `Target: ${range.min}–${range.max} bpm (${z.label}, ${range.lthrPctMin}–${range.lthrPctMax}% of LTHR ${lthr})`,
+      tail,
+      hasZone: true,
+      hasLthr: true,
+    }
+  }
+  return {
+    head: `Target: ${z.pctLTHRmin}–${z.pctLTHRmax}% LTHR`,
+    tail,
+    hasZone: true,
+    hasLthr: false,
+  }
 }
 
 // True if LTHR has been entered for the period that week uses.
