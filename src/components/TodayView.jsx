@@ -17,6 +17,7 @@ import {
   PLAN_END,
   PLAN_START,
 } from '../lib/dateUtils.js'
+import planData from '../data/planData.json' with { type: 'json' }
 import WorkoutCard from './WorkoutCard.jsx'
 import NutritionCard from './NutritionCard.jsx'
 import RedFlagBanner from './RedFlagBanner.jsx'
