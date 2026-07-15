@@ -89,6 +89,7 @@ export default function TodayView({ logs, settings, selectedDate, onSelectDate, 
       <NutritionCard />
 
       <LogForm
+        key={selectedDate}
         iso={selectedDate}
         dayType={day.type}
         initial={logs[selectedDate]}
