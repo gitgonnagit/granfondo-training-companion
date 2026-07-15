@@ -175,16 +175,17 @@ export default function LogForm({ iso, dayType, initial, onChange, savedAt, memO
 // green "Saved" can't be misread as "persisted".
 function SaveIndicator({ savedAt, memOnly = false }) {
   if (memOnly) {
+    const lastTime = formatTimeOnly(savedAt)
     return (
       <span
         role="status"
         aria-live="polite"
-        aria-label="Not persisting — see banner above"
+        aria-label={lastTime ? `Not persisting since ${lastTime}` : 'Not persisting — see banner above'}
         title="Browser storage is full or unavailable. Your logs are held in memory for this session only."
         className="text-[12px] font-semibold text-amber-700 inline-flex items-center gap-1"
       >
         <span aria-hidden="true">⚠</span>
-        <span>Not persisting</span>
+        <span>Not persisting{lastTime ? ` · ${lastTime}` : ''}</span>
       </span>
     )
   }
@@ -225,6 +226,15 @@ function formatSavedAt(savedAtIso, now = new Date()) {
   }
   const long = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
   return `Saved ${long}, ${time}`
+}
+
+// Strip the "Saved " prefix from formatSavedAt so the timestamp can be
+// shown alongside another label (e.g. the memOnly warning reads
+// "Not persisting · 2:47 PM" instead of "Not persisting · Saved 2:47 PM").
+// Returns null when there is no valid timestamp.
+function formatTimeOnly(savedAtIso, now = new Date()) {
+  const full = formatSavedAt(savedAtIso, now)
+  return full ? full.replace(/^Saved /, '') : null
 }
 
 function NumberRow({ label, field, value, min, max, step, onChange }) {
