@@ -8,9 +8,16 @@ import { normalizeLog } from '../lib/storage.js'
 import { prettyDate } from '../lib/dateUtils.js'
 
 const DEFAULTS = {
-  tendonPainDuring: null,
-  tendonPainNextAM: null,
-  ankleConfidence: null,
+  // Pain & confidence sliders default to 0 ("nothing to report") rather
+  // than null ("didn't track"). Two reasons: it lets the athlete skip
+  // steps on a good day without losing information, AND it removes a
+  // step in the 3-day strictly-increasing trend rule
+  // (`src/lib/redFlags.js → tendonPainFlag`) — a 0 reading is
+  // unambiguously tracked, so daily 0s won't fire the alarm by
+  // accident (the rule requires strict < comparisons).
+  tendonPainDuring: 0,
+  tendonPainNextAM: 0,
+  ankleConfidence: 0,
   ankleSwelling: false,
   ankleGivingWay: false,
   hrv: null,
