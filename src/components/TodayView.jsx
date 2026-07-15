@@ -17,7 +17,6 @@ import {
   PLAN_END,
   PLAN_START,
 } from '../lib/dateUtils.js'
-import planData from '../data/planData.json' with { type: 'json' }
 import WorkoutCard from './WorkoutCard.jsx'
 import NutritionCard from './NutritionCard.jsx'
 import RedFlagBanner from './RedFlagBanner.jsx'
@@ -141,11 +140,7 @@ function Header({ selectedDate, onSelectDate, week }) {
           Next <span aria-hidden>›</span>
         </button>
       </div>
-      <WeekProgress
-        weeks={planData.weeks}
-        currentIdx={weekIdx}
-        onSelectDate={onSelectDate}
-      />
+      <WeekProgress currentIdx={weekIdx} onSelectDate={onSelectDate} />
     </header>
   )
 }
@@ -154,14 +149,18 @@ function Header({ selectedDate, onSelectDate, week }) {
 // in a muted sky tone, the current dot inverts (white face on a ring),
 // future dots are outlined. Tapping any dot jumps the Today tab to the
 // first day of that week (cheap, lets the athlete leap weeks).
-function WeekProgress({ weeks, currentIdx, onSelectDate }) {
+//
+// Note: we deliberately use `min-h-[44px]` (not the global `.tap`
+// utility, which also enforces `min-w-[44px]`) here so 9 buttons can
+// share the 358 px header width without overflowing on narrow mobile.
+function WeekProgress({ currentIdx, onSelectDate }) {
   return (
     <div
       className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between gap-1"
       role="navigation"
       aria-label="Training plan progress"
     >
-      {weeks.map((w, i) => {
+      {planData.weeks.map((w, i) => {
         const isCurrent = i === currentIdx
         const isPast = currentIdx >= 0 && i < currentIdx
         const isRace = w.id === 'raceweek'
@@ -169,10 +168,10 @@ function WeekProgress({ weeks, currentIdx, onSelectDate }) {
           <button
             key={w.id}
             type="button"
-            onClick={() => w.days?.[0] && onSelectDate(w.days[0].date)}
+            onClick={() => onSelectDate(w.days[0].date)}
             aria-current={isCurrent ? 'step' : undefined}
             aria-label={`${w.title}${isCurrent ? ' (current)' : ''}`}
-            className="tap flex-1 flex flex-col items-center gap-1"
+            className="min-h-[44px] flex-1 flex flex-col items-center justify-center"
           >
             <span
               className={`block h-7 w-7 rounded-full text-[11px] font-bold flex items-center justify-center transition ${
